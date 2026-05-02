@@ -85,8 +85,8 @@ export default function AccountPage() {
                     <Avatar className="h-20 w-20">
                       <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.firstName} />
                       <AvatarFallback className="text-lg">
-                        {user.firstName[0]}
-                        {user.lastName[0]}
+                        {user.firstName?.[0] || ""}
+                        {user.lastName?.[0] || ""}
                       </AvatarFallback>
                     </Avatar>
                     <div className="space-y-2">

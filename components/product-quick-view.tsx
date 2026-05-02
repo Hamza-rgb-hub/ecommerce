@@ -6,19 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Star, ShoppingBag } from "lucide-react"
 import type { CartItem } from "@/lib/cart-context"
-
-interface Product {
-  id: number
-  name: string
-  brand: string
-  price: number
-  originalPrice?: number
-  image: string
-  rating: number
-  reviews: number
-  isNew: boolean
-  colors: string[]
-}
+import type { Product } from "@/lib/data"
+import { getColorClass } from "@/lib/data"
 
 interface ProductQuickViewProps {
   product: Product
@@ -26,11 +15,9 @@ interface ProductQuickViewProps {
   onAddToCart: (item: Omit<CartItem, "quantity">) => void
 }
 
-const sizes = ["7", "7.5", "8", "8.5", "9", "9.5", "10", "10.5", "11", "11.5", "12"]
-
 export function ProductQuickView({ product, onClose, onAddToCart }: ProductQuickViewProps) {
   const [selectedSize, setSelectedSize] = useState("")
-  const [selectedColor, setSelectedColor] = useState(product.colors[0])
+  const [selectedColor, setSelectedColor] = useState(product.colors?.[0] || "")
 
   const handleAddToCart = () => {
     if (!selectedSize) return
@@ -40,23 +27,10 @@ export function ProductQuickView({ product, onClose, onAddToCart }: ProductQuick
       name: product.name,
       brand: product.brand,
       price: product.price,
-      image: product.image,
+      image: product.images?.[0] || "/placeholder.svg",
       size: selectedSize,
       color: selectedColor,
     })
-  }
-
-  const getColorClass = (color: string) => {
-    const colorMap: Record<string, string> = {
-      white: "bg-white border-gray-300",
-      black: "bg-black",
-      blue: "bg-blue-500",
-      red: "bg-red-500",
-      gray: "bg-gray-500",
-      navy: "bg-blue-900",
-      burgundy: "bg-red-800",
-    }
-    return colorMap[color] || "bg-gray-400"
   }
 
   return (
@@ -68,7 +42,7 @@ export function ProductQuickView({ product, onClose, onAddToCart }: ProductQuick
 
         <div className="grid md:grid-cols-2 gap-6">
           <div className="aspect-square rounded-lg overflow-hidden bg-muted">
-            <img src={product.image || "/placeholder.svg"} alt={product.name} className="w-full h-full object-cover" />
+            <img src={product.images?.[0] || "/placeholder.svg"} alt={product.name} className="w-full h-full object-cover" />
           </div>
 
           <div className="space-y-4">
@@ -97,7 +71,7 @@ export function ProductQuickView({ product, onClose, onAddToCart }: ProductQuick
               <div>
                 <label className="text-sm font-medium mb-2 block">Color</label>
                 <div className="flex gap-2">
-                  {product.colors.map((color) => (
+                  {product.colors?.map((color) => (
                     <button
                       key={color}
                       onClick={() => setSelectedColor(color)}
@@ -112,7 +86,7 @@ export function ProductQuickView({ product, onClose, onAddToCart }: ProductQuick
               <div>
                 <label className="text-sm font-medium mb-2 block">Size</label>
                 <div className="grid grid-cols-4 gap-2">
-                  {sizes.map((size) => (
+                  {product.sizes?.map((size) => (
                     <Button
                       key={size}
                       variant={selectedSize === size ? "default" : "outline"}

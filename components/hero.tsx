@@ -46,9 +46,9 @@ export function Hero() {
             <div className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5">
               <img src="/modern-athletic-sneaker-floating-on-gradient-backg.jpg" alt="Featured sneaker" className="w-full h-full object-cover" />
             </div>
-            <div className="absolute -bottom-4 -right-4 bg-primary text-primary-foreground rounded-full p-4 shadow-lg">
+            <Link href="/new-arrivals" className="inline-flex items-center justify-center h-12 px-8 rounded-md bg-secondary text-secondary-foreground font-medium hover:bg-secondary/90 transition-colors">
               <span className="text-sm font-semibold">New Arrivals</span>
-            </div>
+            </Link>
           </div>
         </div>
       </div>

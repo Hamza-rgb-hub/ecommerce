@@ -20,7 +20,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
-  const { login, isLoading } = useAuth()
+  const { login, isLoading, user } = useAuth()
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,7 +29,7 @@ export default function LoginPage() {
 
     const result = await login(email, password)
     if (result.success) {
-      router.push("/")
+      router.push(email === "admin@solestore.com" ? "/admin" : "/")
     } else {
       setError(result.error || "Login failed")
     }
@@ -114,15 +114,32 @@ export default function LoginPage() {
               </form>
 
               <div className="mt-6 p-4 bg-muted/50 rounded-lg">
-                <p className="text-sm font-medium mb-2">Demo Accounts:</p>
-                <div className="text-xs space-y-1">
-                  <p>
-                    <strong>Admin:</strong> admin@solestore.com / password123
-                  </p>
-                  <p>
-                    <strong>User:</strong> john@example.com / password123
-                  </p>
+                <p className="text-sm font-medium mb-3">Quick Login (Demo Accounts):</p>
+                <div className="space-y-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full justify-start text-left"
+                    onClick={() => { setEmail("admin@solestore.com"); setPassword("password123") }}
+                  >
+                    <div>
+                      <span className="font-medium">Admin Panel</span>
+                      <span className="text-xs text-muted-foreground block">admin@solestore.com</span>
+                    </div>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full justify-start text-left"
+                    onClick={() => { setEmail("john@example.com"); setPassword("password123") }}
+                  >
+                    <div>
+                      <span className="font-medium">Regular User</span>
+                      <span className="text-xs text-muted-foreground block">john@example.com</span>
+                    </div>
+                  </Button>
                 </div>
+                <p className="text-xs text-muted-foreground mt-2">Password for both: password123</p>
               </div>
             </CardContent>
           </Card>

@@ -5,25 +5,25 @@ const categories = [
   {
     name: "Running",
     image: "/running-shoes-on-track.jpg",
-    href: "/category/running",
+    slug: "running",
     description: "Performance running shoes",
   },
   {
     name: "Basketball",
     image: "/basketball-sneakers-on-court.jpg",
-    href: "/category/basketball",
+    slug: "basketball",
     description: "High-top basketball shoes",
   },
   {
     name: "Lifestyle",
     image: "/casual-lifestyle-sneakers.jpg",
-    href: "/category/lifestyle",
+    slug: "lifestyle",
     description: "Everyday casual wear",
   },
   {
     name: "Training",
     image: "/cross-training-athletic-shoes.jpg",
-    href: "/category/training",
+    slug: "training",
     description: "Cross-training footwear",
   },
 ]
@@ -41,7 +41,7 @@ export function Categories() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {categories.map((category) => (
-            <Link key={category.name} href={category.href} className="group">
+            <Link key={category.name} href={`/category/${category.slug}`} className="group">
               <Card className="overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-300 group-hover:scale-105">
                 <CardContent className="p-0">
                   <div className="aspect-[4/3] overflow-hidden">

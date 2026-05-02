@@ -2,7 +2,8 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Search, ShoppingBag, User, Menu, X, LogOut, Settings, Package } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { Search, ShoppingBag, User, Menu, X, LogOut, Settings, Package, LayoutDashboard, Sun, Moon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -17,11 +18,15 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useCart } from "@/lib/cart-context"
 import { useAuth } from "@/lib/auth-context"
+import { useTheme } from "@/lib/theme-context"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+  const router = useRouter()
   const { itemCount } = useCart()
   const { user, isAuthenticated, logout } = useAuth()
+  const { theme, setTheme } = useTheme()
 
   const handleLogout = () => {
     logout()
@@ -58,10 +63,10 @@ export function Header() {
 
           {/* Search Bar */}
           <div className="hidden md:flex items-center space-x-4 flex-1 max-w-md mx-8">
-            <div className="relative flex-1">
+            <form onSubmit={(e) => { e.preventDefault(); if (searchQuery.trim()) { router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`); setSearchQuery("") } }} className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input placeholder="Search for shoes..." className="pl-10 bg-muted/50" />
-            </div>
+              <Input placeholder="Search for shoes..." className="pl-10 bg-muted/50" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+            </form>
           </div>
 
           {/* Actions */}
@@ -74,8 +79,8 @@ export function Header() {
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.firstName} />
                       <AvatarFallback>
-                        {user.firstName[0]}
-                        {user.lastName[0]}
+                        {user.firstName?.[0] || ""}
+                        {user.lastName?.[0] || ""}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
@@ -113,7 +118,7 @@ export function Header() {
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
                         <Link href="/admin">
-                          <Settings className="mr-2 h-4 w-4" />
+                          <LayoutDashboard className="mr-2 h-4 w-4" />
                           <span>Admin Dashboard</span>
                         </Link>
                       </DropdownMenuItem>
@@ -133,6 +138,10 @@ export function Header() {
                 </Link>
               </Button>
             )}
+
+            <Button variant="ghost" size="icon" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </Button>
 
             <Button variant="ghost" size="icon" className="relative" asChild>
               <Link href="/cart">
@@ -156,11 +165,17 @@ export function Header() {
         {isMenuOpen && (
           <div className="md:hidden border-t py-4">
             <div className="flex flex-col space-y-4">
-              <div className="relative">
+              <form onSubmit={(e) => { e.preventDefault(); if (searchQuery.trim()) { router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`); setSearchQuery(""); setIsMenuOpen(false) } }} className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                <Input placeholder="Search for shoes..." className="pl-10 bg-muted/50" />
-              </div>
+                <Input placeholder="Search for shoes..." className="pl-10 bg-muted/50" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+              </form>
               <nav className="flex flex-col space-y-2">
+                <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                  All Products
+                </Link>
+                <Link href="/new-arrivals" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                  New Arrivals
+                </Link>
                 <Link href="/men" className="text-sm font-medium hover:text-primary transition-colors py-2">
                   Men
                 </Link>
@@ -176,6 +191,16 @@ export function Header() {
                 >
                   Sale
                 </Link>
+                <Link href="/collections" className="text-sm font-medium hover:text-primary transition-colors py-2">
+                  Collections
+                </Link>
+                <button
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  className="text-sm font-medium hover:text-primary transition-colors py-2 text-left flex items-center gap-2"
+                >
+                  {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                  {theme === "dark" ? "Light Mode" : "Dark Mode"}
+                </button>
                 {isAuthenticated && user ? (
                   <>
                     <Link href="/account" className="text-sm font-medium hover:text-primary transition-colors py-2">
